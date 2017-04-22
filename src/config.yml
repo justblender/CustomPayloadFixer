@@ -1,0 +1,6 @@
+# The command that is going to be executed when player gets detected with flood
+# By default it's set to none, player will get kicked (see 'kickMessage'))
+dispatchCommand: ~
+
+# The reason why player was kicked (player gets kicked when 'dispatchCommand' is set to none)
+kickMessage: 'You tried to flood with CUSTOM_PAYLOAD packet'

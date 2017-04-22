@@ -1,0 +1,5 @@
+name: CustomPayloadFixer
+main: ru.justblender.payload.CustomPayloadFixer
+version: 1.0
+author: justblender
+depend: [ProtocolLib]
