@@ -103,10 +103,10 @@ public class CustomPayloadFixer extends JavaPlugin {
                         if (page.length() > 256)
                             throw new IOException("A very long page");
                 }
-            } catch (IOException ex) {
+            } catch (Throwable ex) {
                 Bukkit.getScheduler().runTask(this, () -> {
                     if (dispatchCommand != null) {
-                        getServer().dispatchCommand(Bukkit.getConsoleSender(), dispatchCommand);
+                        getServer().dispatchCommand(Bukkit.getConsoleSender(), dispatchCommand.replace("%name%", player.getName()));
                     } else {
                         player.kickPlayer(kickMessage);
                     }
