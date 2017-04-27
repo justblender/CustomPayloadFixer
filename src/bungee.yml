@@ -1,0 +1,4 @@
+name: CustomPayloadFixer
+main: ru.justblender.bungee.CustomPayloadFixer
+version: 1.4
+author: justblender

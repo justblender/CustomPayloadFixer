@@ -1,6 +1,10 @@
-# The command that is going to be executed when player gets detected with flood
-# By default it's set to none, player will get kicked (see 'kickMessage'))
+# The command that is going to be executed when player is detected with flood
+# By default is set to do nothing, use %name% to specify exploiters nickname (for example, 'ban %name%')
 dispatchCommand: ~
 
-# The reason why player was kicked (player gets kicked when 'dispatchCommand' is set to none)
-kickMessage: 'You tried to flood with CUSTOM_PAYLOAD packet'
+# Works only on BungeeCord.
+# Plugin ignores Forge clients if this parameter is set to true during the checks of 'REGISTER' channel flood
+ignoreForge: false
+
+# The reason why player was kicked
+kickMessage: 'You tried to exploit CustomPayload packet'
