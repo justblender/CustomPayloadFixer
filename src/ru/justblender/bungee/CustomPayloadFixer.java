@@ -107,7 +107,7 @@ public class CustomPayloadFixer extends Plugin implements Listener {
 
         File file = new File(getDataFolder(), "config.yml");
         if (!file.exists()) {
-            try (InputStream in = getResourceAsStream("/resources/bungee.yml")) {
+            try (InputStream in = getResourceAsStream("config.yml")) {
                 Files.copy(in, file.toPath());
             } catch (IOException e) {
                 e.printStackTrace();
