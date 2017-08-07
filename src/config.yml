@@ -2,9 +2,5 @@
 # By default is set to do nothing, use %name% to specify exploiters nickname (for example, 'ban %name%')
 dispatchCommand: ~
 
-# Works only on BungeeCord.
-# Plugin ignores Forge clients if this parameter is set to true during the checks of 'REGISTER' channel flood
-ignoreForge: false
-
 # The reason why player was kicked
 kickMessage: 'You tried to exploit CustomPayload packet'
