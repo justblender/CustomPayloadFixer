@@ -1,5 +1,6 @@
 package ru.justblender.bungee;
 
+import com.google.common.base.Charsets;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -11,7 +12,6 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
-import com.google.common.base.Charsets;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,22 +37,26 @@ public class CustomPayloadFixer extends Plugin implements Listener {
     private static final Map<Connection, AtomicInteger> CHANNELS_REGISTERED = new ConcurrentHashMap<>();
 
     private String dispatchCommand, kickMessage;
-    private boolean ignoreForge;
 
     @Override
     public void onEnable() {
-        try {
-            Configuration configuration = this.loadConfiguration();
+        Configuration configuration;
 
-            this.dispatchCommand = configuration.getString("dispatchCommand");
-            this.ignoreForge = configuration.getBoolean("ignoreForge", false);
-            this.kickMessage = configuration.getString("kickMessage");
-        } catch (IOException e) {
-            getLogger().severe("Unable to load configuration file, plugin isn't going to work");
+        try {
+            configuration = loadConfiguration();
+        } catch (IOException ignored) {
+            configuration = null;
+        }
+
+        if (configuration == null) {
+            getLogger().severe("Unable to load configuration file, dammit!");
             return;
         }
 
-        this.getProxy().getPluginManager().registerListener(this, this);
+        dispatchCommand = configuration.getString("dispatchCommand");
+        kickMessage = configuration.getString("kickMessage");
+
+        getProxy().getPluginManager().registerListener(this, this);
     }
 
     @EventHandler
@@ -87,7 +91,7 @@ public class CustomPayloadFixer extends Plugin implements Listener {
                 getProxy().getPluginManager().dispatchCommand(getProxy().getConsole(),
                         dispatchCommand.replace("%name%", ((ProxiedPlayer) connection).getName()));
 
-            getLogger().warning(connection.getAddress() + " tried to exploit CustomPayload packet");
+            getLogger().warning(connection.getAddress() + " tried to exploit CustomPayload: " + ex.getMessage());
             event.setCancelled(true);
         }
     }

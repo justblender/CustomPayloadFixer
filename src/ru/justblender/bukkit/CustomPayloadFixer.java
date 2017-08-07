@@ -20,9 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 /**
  * ****************************************************************
@@ -36,16 +36,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CustomPayloadFixer extends JavaPlugin {
 
+    private static final Pattern COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-OR]");
     private static final Map<Player, Long> PACKET_USAGE = new ConcurrentHashMap<>();
 
     private String dispatchCommand, kickMessage;
 
     @Override
     public void onEnable() {
-        this.saveDefaultConfig();
+        saveDefaultConfig();
 
-        this.dispatchCommand = this.getConfig().getString("dispatchCommand");
-        this.kickMessage = this.getConfig().getString("kickMessage");
+        dispatchCommand = getConfig().getString("dispatchCommand");
+        kickMessage = getConfig().getString("kickMessage");
 
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, PacketType.Play.Client.CUSTOM_PAYLOAD) {
             @Override
@@ -106,7 +107,7 @@ public class CustomPayloadFixer extends JavaPlugin {
                             dispatchCommand.replace("%name%", player.getName()));
             });
 
-            getLogger().warning(player.getName() + " tried to exploit CustomPayload packet");
+            getLogger().warning(player.getName() + " tried to exploit CustomPayload: " + ex.getMessage());
             event.setCancelled(true);
         }
     }
@@ -119,10 +120,8 @@ public class CustomPayloadFixer extends JavaPlugin {
         byte[] bytes = new byte[buffer.readableBytes()];
         buffer.readBytes(bytes);
 
-        DataInputStream input = new DataInputStream(new ByteArrayInputStream(bytes));
-        ItemStack itemStack = StreamSerializer.getDefault().deserializeItemStack(input);
-
-        try {
+        try (DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(bytes))) {
+            ItemStack itemStack = StreamSerializer.getDefault().deserializeItemStack(inputStream);
             if (itemStack == null)
                 throw new IOException("Unable to deserialize ItemStack");
 
@@ -139,12 +138,14 @@ public class CustomPayloadFixer extends JavaPlugin {
                 // Here comes the funny part - Minecraft Wiki says that book allows to have only 256 symbols per page,
                 // but in reality it actually can get up to 257. What a jerks. (tested on 1.8.9)
 
+                // Found one more exciting and surprisingly refreshing thing about Minecraft -
+                // Minecraft clients allow players to use § symbols in books. What the fuck, why?
+
                 for (String page : pages)
-                    if (page.length() > 257)
+                    if (COLOR_PATTERN.matcher(page).replaceAll("").length() > 257)
                         throw new IOException("A very long page");
             }
         } finally {
-            input.close();
             buffer.release();
         }
     }
