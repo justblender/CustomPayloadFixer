@@ -11,7 +11,7 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
-import org.apache.commons.io.Charsets;
+import com.google.common.base.Charsets;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,9 +67,6 @@ public class CustomPayloadFixer extends Plugin implements Listener {
 
         try {
             if ("REGISTER".equals(name)) {
-                if (((ProxiedPlayer) connection).isForgeUser() && ignoreForge)
-                    return;
-
                 if (!CHANNELS_REGISTERED.containsKey(connection))
                     CHANNELS_REGISTERED.put(connection, new AtomicInteger());
 
