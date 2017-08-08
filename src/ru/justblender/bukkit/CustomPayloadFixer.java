@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 /**
  * ****************************************************************
@@ -36,7 +35,7 @@ import java.util.regex.Pattern;
  */
 public class CustomPayloadFixer extends JavaPlugin {
 
-    private static final Pattern COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-OR]");
+    // private static final Pattern COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-OR]");
     private static final Map<Player, Long> PACKET_USAGE = new ConcurrentHashMap<>();
 
     private String dispatchCommand, kickMessage;
@@ -135,15 +134,19 @@ public class CustomPayloadFixer extends JavaPlugin {
                 if (pages.size() > 50)
                     throw new IOException("Too much pages");
 
-                // Here comes the funny part - Minecraft Wiki says that book allows to have only 256 symbols per page,
-                // but in reality it actually can get up to 257. What a jerks. (tested on 1.8.9)
+                /*
+                Update 1: Here comes the funny part - Minecraft Wiki says that book allows to have only 256 symbols per page,
+                but in reality it actually can get up to 257. What a jerks. (tested on 1.8.9)
 
-                // Found one more exciting and surprisingly refreshing thing about Minecraft -
-                // Minecraft clients allow players to use § symbols in books. What the fuck, why?
+                Update 2: Found one more exciting and surprisingly refreshing thing about Minecraft -
+                Minecraft clients allow players to use § symbols in books. What the fuck, why?
+
+                Update 3: I fucking hate Minecraft. Just why, whyy? Page length check is removed for now.
 
                 for (String page : pages)
                     if (COLOR_PATTERN.matcher(page).replaceAll("").length() > 257)
                         throw new IOException("A very long page");
+                */
             }
         } finally {
             buffer.release();
